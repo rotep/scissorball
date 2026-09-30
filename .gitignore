@@ -1,0 +1,13 @@
+build/
+__pycache__/
+*.pyc
+# KiCad local state
+*.kicad_prl
+*-backups/
+fp-info-cache
+*.lck
+_autosave-*
+# routing intermediates
+*.dsn
+*.ses
+freerouting*.log

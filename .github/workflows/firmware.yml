@@ -1,0 +1,36 @@
+name: firmware
+
+on:
+  push:
+    paths: ["firmware/**", ".github/workflows/firmware.yml"]
+  pull_request:
+    paths: ["firmware/**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout QMK
+        uses: actions/checkout@v4
+        with:
+          repository: qmk/qmk_firmware
+          path: qmk_firmware
+          submodules: recursive
+
+      - name: Build
+        env:
+          QMK_HOME: ${{ github.workspace }}/qmk_firmware
+        run: |
+          git config --global --add safe.directory '*'
+          cp -r firmware/scissorball36 qmk_firmware/keyboards/
+          cd qmk_firmware
+          qmk compile -kb scissorball36 -km default
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scissorball36-firmware
+          path: qmk_firmware/*.uf2
